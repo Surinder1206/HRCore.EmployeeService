@@ -1,4 +1,8 @@
-﻿using Moq;
+﻿using HRCore.EmployeeService.Application.DTOs;
+using HRCore.EmployeeService.Application.Interfaces;
+using HRCore.EmployeeService.Application.Services;
+using HRCore.EmployeeService.Domain.Entities;
+using Moq;
 using NUnit.Framework;
 
 namespace HRCore.EmployeeService.Tests.Application.Services;

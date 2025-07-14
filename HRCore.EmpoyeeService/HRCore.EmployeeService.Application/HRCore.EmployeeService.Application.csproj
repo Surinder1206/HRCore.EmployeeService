@@ -18,9 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Services\" />
+    <Folder Include="NotificationMessages\" />
   </ItemGroup>
 
 </Project>

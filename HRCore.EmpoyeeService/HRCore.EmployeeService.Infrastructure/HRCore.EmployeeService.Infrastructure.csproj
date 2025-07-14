@@ -18,8 +18,4 @@
     <ProjectReference Include="..\HRCore.EmployeeService.Domain\HRCore.EmployeeService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\" />
-  </ItemGroup>
-
 </Project>
