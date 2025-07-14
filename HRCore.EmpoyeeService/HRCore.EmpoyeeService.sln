@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCore.EmpoyeeService.API", "HRCore.EmpoyeeService.API\HRCore.EmpoyeeService.API.csproj", "{B2230BB3-0C84-449D-8C4A-0514DAFC739E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCore.EmployeeService.Infrastructure", "HRCore.EmployeeService.Infrastructure\HRCore.EmployeeService.Infrastructure.csproj", "{566D96A0-F0DF-499A-AEF1-ECA91487CACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCore.EmployeeService.Domain", "HRCore.EmployeeService.Domain\HRCore.EmployeeService.Domain.csproj", "{48D270DC-BF0A-4AF7-A668-1FDBB4D2CB15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCore.EmployeeService.Application", "HRCore.EmployeeService.Application\HRCore.EmployeeService.Application.csproj", "{43057690-F082-4243-912E-C1013D3899D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCore.EmployeeService.Tests", "HRCore.EmployeeService.Tests\HRCore.EmployeeService.Tests.csproj", "{F2DD7BA3-F80E-49AE-A50B-23E060DA8421}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2230BB3-0C84-449D-8C4A-0514DAFC739E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2230BB3-0C84-449D-8C4A-0514DAFC739E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2230BB3-0C84-449D-8C4A-0514DAFC739E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2230BB3-0C84-449D-8C4A-0514DAFC739E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{566D96A0-F0DF-499A-AEF1-ECA91487CACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{566D96A0-F0DF-499A-AEF1-ECA91487CACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{566D96A0-F0DF-499A-AEF1-ECA91487CACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{566D96A0-F0DF-499A-AEF1-ECA91487CACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48D270DC-BF0A-4AF7-A668-1FDBB4D2CB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D270DC-BF0A-4AF7-A668-1FDBB4D2CB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D270DC-BF0A-4AF7-A668-1FDBB4D2CB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D270DC-BF0A-4AF7-A668-1FDBB4D2CB15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43057690-F082-4243-912E-C1013D3899D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43057690-F082-4243-912E-C1013D3899D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43057690-F082-4243-912E-C1013D3899D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43057690-F082-4243-912E-C1013D3899D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DD7BA3-F80E-49AE-A50B-23E060DA8421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DD7BA3-F80E-49AE-A50B-23E060DA8421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DD7BA3-F80E-49AE-A50B-23E060DA8421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DD7BA3-F80E-49AE-A50B-23E060DA8421}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {601BED5A-9DFB-4071-A42C-FD67D5EC22C9}
+	EndGlobalSection
+EndGlobal
