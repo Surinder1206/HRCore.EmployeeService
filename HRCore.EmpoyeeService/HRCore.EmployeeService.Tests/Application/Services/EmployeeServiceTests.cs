@@ -26,8 +26,8 @@ public class EmployeeServiceTests
 
         var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()))
-            .Returns(Task.CompletedTask);
+        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
+
 
         var service = new EmployeeAppService(unitOfWorkMock.Object);
 
@@ -55,6 +55,8 @@ public class EmployeeServiceTests
         };
 
         var unitOfWorkMock = new Mock<IUnitOfWork>();
+        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
+
         var messagingServiceMock = new Mock<IMessagingService>();
 
         var service = new EmployeeAppService(unitOfWorkMock.Object, messagingServiceMock.Object);
