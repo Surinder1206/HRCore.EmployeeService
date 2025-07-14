@@ -38,4 +38,31 @@ public class EmployeeServiceTests
         unitOfWorkMock.Verify(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()), Times.Once);
         unitOfWorkMock.Verify(u => u.SaveAsync(), Times.Once);
     }
+
+    [Test]
+    public async Task CreateAsync_Should_call_SendCreateEmployeeMessage_when_employee_created()
+    {
+        // Arrange
+        var dto = new EmployeeDto
+        {
+            FullName = "Surinder Singh",
+            Department = "Engineering",
+            Email = "surinder.singh@gmail.com",
+            Role = "Software Engineer",
+            Address = "123 Main St, City, Country",
+            DateOfJoining = DateTime.UtcNow,
+            Status = "Active"
+        };
+
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var messagingServiceMock = new Mock<IMessagingService>();
+
+        var service = new EmployeeAppService(unitOfWorkMock.Object, messagingServiceMock.Object);
+
+        // Act
+        var result = await service.CreateAsync(dto);
+
+        // Assert
+        messagingServiceMock.Verify(m => m.SendCreateEmployeeMessage(It.IsAny<EmployeeMessageBody>()), Times.Once);
+    }
 }
