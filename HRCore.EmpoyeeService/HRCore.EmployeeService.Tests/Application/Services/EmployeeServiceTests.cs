@@ -1,5 +1,6 @@
 ﻿using HRCore.EmployeeService.Application.DTOs;
 using HRCore.EmployeeService.Application.Interfaces;
+using HRCore.EmployeeService.Application.NotificationMessages;
 using HRCore.EmployeeService.Application.Services;
 using HRCore.EmployeeService.Domain.Entities;
 using Moq;
@@ -29,7 +30,7 @@ public class EmployeeServiceTests
         unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
 
 
-        var service = new EmployeeAppService(unitOfWorkMock.Object);
+        var service = new EmployeeAppService(unitOfWorkMock.Object, new Mock<IMessagingService>().Object);
 
         // Act
         var result = await service.CreateAsync(dto);

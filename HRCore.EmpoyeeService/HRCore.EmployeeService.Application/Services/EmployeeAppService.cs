@@ -4,9 +4,10 @@ using HRCore.EmployeeService.Domain.Entities;
 
 namespace HRCore.EmployeeService.Application.Services;
 
-public class EmployeeAppService(IUnitOfWork unitOfWork)
+public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messagingService)
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IMessagingService _messagingService = messagingService;
 
     public async Task<EmployeeDto> CreateAsync(EmployeeDto employeeDto)
     {
@@ -22,6 +23,7 @@ public class EmployeeAppService(IUnitOfWork unitOfWork)
         };
         await _unitOfWork.EmployeeRepository.InsertAsync(employee);
         await _unitOfWork.SaveAsync();
+        await _messagingService.SendCreateEmployeeMessage(new NotificationMessages.EmployeeMessageBody() { Email = employee.Email, FullName = employee.FullName });
         return null;
     }
 }
