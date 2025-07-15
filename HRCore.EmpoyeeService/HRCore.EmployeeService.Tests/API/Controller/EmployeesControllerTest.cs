@@ -45,4 +45,44 @@ internal class EmployeesControllerTest
         result.Should().BeOfType<CreatedAtActionResult>().Which.ActionName.Should().Be("GetById");
 
     }
+
+    [Test]
+    public async Task CreateEmployeeAsync_should_return_expected_employee_response_on_success()
+    {
+        // Arrange
+
+        var employeeServiceMock = new Mock<IEmployeeAppService>();
+        var _employeeDto = ServiceResult.Success(new EmployeeDto()
+        {
+            Id = Guid.NewGuid(),
+            FullName = "John Doe",
+            Email = "john@gmail.com",
+            Department = "HR",
+            Role = "Developer",
+            Address = "10 Queens Apartment",
+            Status = "Active",
+        });
+
+        var expectedResponse = new EmployeeResponse()
+        {
+            Id = _employeeDto.Value.Id,
+            FullName = _employeeDto.Value.FullName,
+            Email = _employeeDto.Value.Email,
+            Department = _employeeDto.Value.Department,
+            Role = _employeeDto.Value.Role,
+            Address = _employeeDto.Value.Address,
+            Status = _employeeDto.Value.Status
+        };
+
+
+        employeeServiceMock.Setup(s => s.CreateAsync(It.IsAny<EmployeeDto>())).ReturnsAsync(_employeeDto);
+        var controller = new EmployeesController(employeeServiceMock.Object);
+
+        // Act 
+        var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
+
+        // Assert
+        result.Should().BeOfType<CreatedAtActionResult>().Which.Value.Should().BeOfType<EmployeeResponse>().Which.Should()
+            .BeEquivalentTo(expectedResponse);
+    }
 }
