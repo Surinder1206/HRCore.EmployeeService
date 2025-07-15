@@ -9,6 +9,7 @@
             private const string Base = $"{ApiBase}/employees";
 
             public const string Create = Base;
+            public const string Get = $"{Base}/{{id:guid}}";
         }
     }
 

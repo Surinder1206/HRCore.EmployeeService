@@ -1,4 +1,5 @@
-﻿using HRCore.EmployeeService.Application.Interfaces;
+﻿using HRCore.EmployeeService.Application.DTOs;
+using HRCore.EmployeeService.Application.Interfaces;
 using HRCore.EmpoyeeService.API.Constants;
 using HRCore.EmpoyeeService.API.Mapper;
 using HRCore.EmpoyeeService.API.Models.Requests;
@@ -25,5 +26,15 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "Bad Request"
             );
+    }
+
+    [HttpGet(ApiEndpoints.Employee.Get)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Produces(typeof(ActionResult<EmployeeDto>))]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        return null;
     }
 }
