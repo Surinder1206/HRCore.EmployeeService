@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using HRCore.EmployeeService.Application.DTOs;
-using HRCore.EmployeeService.Application.Interfaces;
 using HRCore.EmployeeService.Application.Results;
-using HRCore.EmpoyeeService.API;
+using HRCore.EmployeeService.Tests.Builders;
+using HRCore.EmpoyeeService.API.Mapper;
 using HRCore.EmpoyeeService.API.Models.Requests;
 using HRCore.EmpoyeeService.API.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +17,13 @@ internal class EmployeesControllerTest
     public async Task CreateEmployeeAsync_should_call_service_when_attempting_to_create_app()
     {
         // Arrange
-        var employeeServiceMock = new Mock<IEmployeeAppService>();
-        var controller = new EmployeesController(employeeServiceMock.Object);
+
+        var employeeServiceMock = new EmployeeAppServiceMockBuilder()
+            .Build();
+
+        var controller = new EmployeesControllerBuilder()
+            .Using(employeeServiceMock.Object)
+            .Build();
 
         // Act
         await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
@@ -31,12 +36,8 @@ internal class EmployeesControllerTest
     public async Task CreateEmployeeAsync_should_return_201_Created_with_location_when_employee_creation_is_successful()
     {
         // Arrange
-        var id = Guid.NewGuid();
-        var employeeServiceMock = new Mock<IEmployeeAppService>();
-        var _employeeDto = ServiceResult.Success(new EmployeeDto() { Id = id });
-        employeeServiceMock.Setup(s => s.CreateAsync(It.IsAny<EmployeeDto>())).ReturnsAsync(_employeeDto);
-
-        var controller = new EmployeesController(employeeServiceMock.Object);
+        var controller = new EmployeesControllerBuilder()
+            .Build();
 
         // Act 
         var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
@@ -52,32 +53,18 @@ internal class EmployeesControllerTest
     {
         // Arrange
 
-        var employeeServiceMock = new Mock<IEmployeeAppService>();
-        var _employeeDto = ServiceResult.Success(new EmployeeDto()
-        {
-            Id = Guid.NewGuid(),
-            FullName = "John Doe",
-            Email = "john@gmail.com",
-            Department = "HR",
-            Role = "Developer",
-            Address = "10 Queens Apartment",
-            Status = "Active",
-        });
+        //var employeeServiceMock = new Mock<IEmployeeAppService>();
+        var _employeeDto = ServiceResult.Success(new EmployeeDtoBuilder().Build());
 
-        var expectedResponse = new EmployeeResponse()
-        {
-            Id = _employeeDto.Value.Id,
-            FullName = _employeeDto.Value.FullName,
-            Email = _employeeDto.Value.Email,
-            Department = _employeeDto.Value.Department,
-            Role = _employeeDto.Value.Role,
-            Address = _employeeDto.Value.Address,
-            Status = _employeeDto.Value.Status
-        };
+        var employeeServiceMock = new EmployeeAppServiceMockBuilder()
+            .ReturnsForCreateEmployee(_employeeDto)
+            .Build();
 
+        var controller = new EmployeesControllerBuilder()
+            .Using(employeeServiceMock.Object)
+           .Build();
 
-        employeeServiceMock.Setup(s => s.CreateAsync(It.IsAny<EmployeeDto>())).ReturnsAsync(_employeeDto);
-        var controller = new EmployeesController(employeeServiceMock.Object);
+        var expectedResponse = _employeeDto.Value.ToResponse();
 
         // Act 
         var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequest());

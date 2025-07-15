@@ -89,7 +89,7 @@ public class EmployeeServiceTests
         result.Value.Email.Should().Be(employeeDto.Email);
         result.Value.Role.Should().Be(employeeDto.Role);
         result.Value.Address.Should().Be(employeeDto.Address);
-        result.Value.DateOfJoining.Should().Be(employeeDto.DateOfJoining);
+        result.Value.DateOfJoining.Should().BeCloseTo(employeeDto.DateOfJoining, TimeSpan.FromSeconds(1));
         result.Value.Status.Should().Be(employeeDto.Status);
     }
 

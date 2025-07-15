@@ -19,4 +19,8 @@
     <ProjectReference Include="..\HRCore.EmployeeService.Infrastructure\HRCore.EmployeeService.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="APIE\" />
+  </ItemGroup>
+
 </Project>
