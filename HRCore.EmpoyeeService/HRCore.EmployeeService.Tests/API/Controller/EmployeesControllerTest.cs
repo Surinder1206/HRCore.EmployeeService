@@ -4,6 +4,7 @@ using HRCore.EmployeeService.Application.Interfaces;
 using HRCore.EmployeeService.Application.Results;
 using HRCore.EmpoyeeService.API;
 using HRCore.EmpoyeeService.API.Models.Requests;
+using HRCore.EmpoyeeService.API.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
