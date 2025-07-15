@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRCore.EmpoyeeService.API;
 
-public class EmployeesController(IEmployeeAppService employeeAppService)
+[ApiController]
+public class EmployeesController(IEmployeeAppService employeeAppService) : ControllerBase
 {
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
 
@@ -14,6 +15,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService)
     public async Task<IActionResult> CreateEmployeeAsync([FromBody] CreateEmployeeRequest createEmployeeRequest)
     {
         var result = await _employeeAppService.CreateAsync(createEmployeeRequest.ToDto());
-        return null;
+
+        return CreatedAtAction("GetById", new { id = 111 });
     }
 }
