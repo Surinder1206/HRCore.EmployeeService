@@ -16,6 +16,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
     [HttpPost(ApiEndpoints.Employee.Create)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Produces(typeof(ActionResult<EmployeeDto>))]
     public async Task<IActionResult> CreateEmployeeAsync([FromBody] CreateEmployeeRequest createEmployeeRequest)
     {
         var result = await _employeeAppService.CreateAsync(createEmployeeRequest.ToDto());
@@ -33,6 +34,17 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         var result = await _employeeAppService.GetEmployeeByIdAsync(id);
+        return result.Ok
+            ? Ok(result.Value)
+            : Problem(result);
+    }
+
+    [HttpGet(ApiEndpoints.Employee.GetAll)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Produces(typeof(ActionResult<List<EmployeeDto>>))]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _employeeAppService.GetAllEmployeesAsync();
         return result.Ok
             ? Ok(result.Value)
             : Problem(result);

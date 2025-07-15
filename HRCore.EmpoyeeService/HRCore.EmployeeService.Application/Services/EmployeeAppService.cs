@@ -42,4 +42,17 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
 
         return ServiceResult.Success(employeeDto);
     }
+
+    public async Task<ServiceResult<List<EmployeeDto>>> GetAllEmployeesAsync()
+    {
+        var employees = await _unitOfWork.EmployeeRepository.GetAsync();
+        List<EmployeeDto> employeeDtos = [];
+        foreach (var employee in employees)
+        {
+            var empDto = employee.ToEmployeeDto();
+            employeeDtos.Add(empDto);
+        }
+
+        return ServiceResult.Success(employeeDtos);
+    }
 }

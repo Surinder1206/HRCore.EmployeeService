@@ -7,4 +7,6 @@ public interface IGenericRepository<TEntity> where TEntity : class
     Task InsertAsync(TEntity entity);
 
     Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null!, string includeProperties = "", bool IsNoTracking = false);
+
+    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "", int? take = null, int? skip = null, bool IsNoTracking = false);
 }

@@ -8,4 +8,6 @@ public interface IEmployeeAppService
     public Task<ServiceResult<EmployeeDto>> CreateAsync(EmployeeDto employeeDto);
 
     public Task<ServiceResult<EmployeeDto>> GetEmployeeByIdAsync(Guid id);
+
+    public Task<ServiceResult<List<EmployeeDto>>> GetAllEmployeesAsync();
 }
