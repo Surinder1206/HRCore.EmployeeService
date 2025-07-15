@@ -61,4 +61,15 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             ? NoContent()
             : Problem(result);
     }
+
+    [HttpDelete(ApiEndpoints.Employee.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        var result = await _employeeAppService.DeleteEmployeeAsync(id);
+        return result.Ok
+            ? NoContent()
+            : Problem(result);
+    }
 }

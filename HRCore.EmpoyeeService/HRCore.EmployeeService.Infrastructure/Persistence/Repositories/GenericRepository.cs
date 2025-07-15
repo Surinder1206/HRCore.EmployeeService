@@ -74,4 +74,13 @@ public class GenericRepository<TEntity>(EmployeeServiceDBContext context) : IGen
         }
         return await query.ToListAsync();
     }
+
+    public virtual void Delete(TEntity entityToDelete)
+    {
+        if (context.Entry(entityToDelete).State == EntityState.Detached)
+        {
+            dbSet.Attach(entityToDelete);
+        }
+        dbSet.Remove(entityToDelete);
+    }
 }

@@ -82,4 +82,18 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
         await _unitOfWork.SaveAsync();
         return ServiceResult.Success();
     }
+
+    public async Task<ServiceResult> DeleteEmployeeAsync(Guid id)
+    {
+        var employee = await _unitOfWork.EmployeeRepository.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (employee == null)
+        {
+            return ServiceResult.Fail<EmployeeDto>("Employee not found.", ErrorType.NotFound);
+        }
+
+        _unitOfWork.EmployeeRepository.Delete(employee);
+        await _unitOfWork.SaveAsync();
+        return ServiceResult.Success();
+    }
 }
