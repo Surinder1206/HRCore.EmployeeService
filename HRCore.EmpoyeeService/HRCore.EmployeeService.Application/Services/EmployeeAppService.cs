@@ -11,6 +11,7 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
 
     public async Task<EmployeeDto> CreateAsync(EmployeeDto employeeDto)
     {
+        var Id = Guid.NewGuid();
         var employee = new Employee
         {
             FullName = employeeDto.FullName,
@@ -24,6 +25,16 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
         await _unitOfWork.EmployeeRepository.InsertAsync(employee);
         await _unitOfWork.SaveAsync();
         await _messagingService.SendCreateEmployeeMessage(new NotificationMessages.EmployeeMessageBody() { Email = employee.Email, FullName = employee.FullName });
-        return null;
+        return new EmployeeDto()
+        {
+            Id = Id,
+            FullName = employee.FullName,
+            Department = employee.Department,
+            Email = employee.Email,
+            Role = employee.Role,
+            Address = employee.Address,
+            DateOfJoining = employee.DateOfJoining,
+            Status = employee.Status
+        };
     }
 }
