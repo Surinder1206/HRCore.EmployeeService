@@ -49,4 +49,16 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             ? Ok(result.Value)
             : Problem(result);
     }
+
+    [HttpPut(ApiEndpoints.Employee.Update)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Produces(typeof(ActionResult<EmployeeDto>))]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateEmployeeRequest updateEmployeeRequest)
+    {
+        var result = await _employeeAppService.UpdateEmployeeAsync(id, updateEmployeeRequest.ToDto());
+        return result.Ok
+            ? NoContent()
+            : Problem(result);
+    }
 }

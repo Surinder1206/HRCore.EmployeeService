@@ -18,4 +18,18 @@ public static class RequestToDtoMapper
             Status = createEmployeeRequest.Status
         };
     }
+
+    public static EmployeeDto ToDto(this UpdateEmployeeRequest updateEmployeeRequest)
+    {
+        return new EmployeeDto
+        {
+            FullName = updateEmployeeRequest.FullName,
+            Department = updateEmployeeRequest.Department,
+            Email = updateEmployeeRequest.Email,
+            Role = updateEmployeeRequest.Role,
+            Address = updateEmployeeRequest.Address,
+            DateOfJoining = updateEmployeeRequest.DateOfJoining,
+            Status = updateEmployeeRequest.Status
+        };
+    }
 }

@@ -55,4 +55,31 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
 
         return ServiceResult.Success(employeeDtos);
     }
+
+    public async Task<ServiceResult> UpdateEmployeeAsync(Guid id, EmployeeDto employeeDto)
+    {
+        var existingEmployee = await _unitOfWork.EmployeeRepository.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existingEmployee == null)
+        {
+            return ServiceResult.Fail<EmployeeDto>("Employee not found.", ErrorType.NotFound);
+        }
+
+        var existingEmailEmployee = await _unitOfWork.EmployeeRepository.FirstOrDefaultAsync(e => e.Id != id && e.Email == employeeDto.Email);
+        if (existingEmailEmployee != null)
+        {
+            return ServiceResult.Fail<EmployeeDto>("An employee with the same email already exists.", ErrorType.BadRequest);
+        }
+
+        existingEmployee.Status = employeeDto.Status;
+        existingEmployee.FullName = employeeDto.FullName;
+        existingEmployee.Department = employeeDto.Department;
+        existingEmployee.Email = employeeDto.Email;
+        existingEmployee.Role = employeeDto.Role;
+        existingEmployee.Address = employeeDto.Address;
+        existingEmployee.DateOfJoining = employeeDto.DateOfJoining;
+
+        await _unitOfWork.SaveAsync();
+        return ServiceResult.Success();
+    }
 }
