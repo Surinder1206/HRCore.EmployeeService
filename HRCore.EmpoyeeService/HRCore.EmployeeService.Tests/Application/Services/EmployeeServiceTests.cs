@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using FluentAssertions;
-using HRCore.EmployeeService.Application.DTOs;
+﻿using FluentAssertions;
 using HRCore.EmployeeService.Application.Interfaces;
 using HRCore.EmployeeService.Application.NotificationMessages;
 using HRCore.EmployeeService.Application.Results;
-using HRCore.EmployeeService.Application.Services;
 using HRCore.EmployeeService.Domain.Entities;
+using HRCore.EmployeeService.Tests.Builders;
 using Moq;
 using NUnit.Framework;
 
@@ -17,56 +15,47 @@ public class EmployeeServiceTests
     public async Task CreateAsync_Should_call_insert_async_and_save_async_when_request_is_valid()
     {
         // Arrange
-        var dto = new EmployeeDto
-        {
-            FullName = "Surinder Singh",
-            Department = "Engineering",
-            Email = "surinder.singh@gmail.com",
-            Role = "Software Engineer",
-            Address = "123 Main St, City, Country",
-            DateOfJoining = DateTime.UtcNow,
-            Status = "Active"
-        };
+        var employeeRepository = new EmployeeRepositoryMockBuilder()
+            .ReturnsForFirstOrDefaultAsync(null!)
+            .Build();
 
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var unitOfWorkMockBuilder = new UnitOfWorkMockBuilder()
+            .Using(employeeRepository.Object)
+            .Build();
 
-        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
-
-
-        var service = new EmployeeAppService(unitOfWorkMock.Object, new Mock<IMessagingService>().Object);
+        var service = new EmployeeAppServiceBuilder()
+            .WithUnitOfWork(unitOfWorkMockBuilder.Object)
+            .Build();
 
         // Act
-        var result = await service.CreateAsync(dto);
+        var result = await service.CreateAsync(new EmployeeDtoBuilder().Build());
 
         // Assert
-        unitOfWorkMock.Verify(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()), Times.Once);
-        unitOfWorkMock.Verify(u => u.SaveAsync(), Times.Once);
+        unitOfWorkMockBuilder.Verify(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()), Times.Once);
+        unitOfWorkMockBuilder.Verify(u => u.SaveAsync(), Times.Once);
     }
 
     [Test]
     public async Task CreateAsync_Should_call_SendCreateEmployeeMessage_when_employee_created()
     {
         // Arrange
-        var dto = new EmployeeDto
-        {
-            FullName = "Surinder Singh",
-            Department = "Engineering",
-            Email = "surinder.singh@gmail.com",
-            Role = "Software Engineer",
-            Address = "123 Main St, City, Country",
-            DateOfJoining = DateTime.UtcNow,
-            Status = "Active"
-        };
-
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
-
         var messagingServiceMock = new Mock<IMessagingService>();
 
-        var service = new EmployeeAppService(unitOfWorkMock.Object, messagingServiceMock.Object);
+        var employeeRepository = new EmployeeRepositoryMockBuilder()
+            .ReturnsForFirstOrDefaultAsync(null!)
+            .Build();
+
+        var unitOfWorkMockBuilder = new UnitOfWorkMockBuilder()
+            .Using(employeeRepository.Object)
+            .Build();
+
+        var service = new EmployeeAppServiceBuilder()
+            .WithUnitOfWork(unitOfWorkMockBuilder.Object)
+           .WithMessagingService(messagingServiceMock.Object)
+           .Build();
 
         // Act
-        var result = await service.CreateAsync(dto);
+        var result = await service.CreateAsync(new EmployeeDtoBuilder().Build());
 
         // Assert
         messagingServiceMock.Verify(m => m.SendCreateEmployeeMessage(It.IsAny<EmployeeMessageBody>()), Times.Once);
@@ -76,73 +65,56 @@ public class EmployeeServiceTests
     public async Task CreateAsync_Should_return_employee_dto_with_expected_values()
     {
         // Arrange
-        var dto = new EmployeeDto
-        {
-            FullName = "Surinder Singh",
-            Department = "Engineering",
-            Email = "surinder.singh@gmail.com",
-            Role = "Software Engineer",
-            Address = "123 Main St, City, Country",
-            DateOfJoining = DateTime.UtcNow,
-            Status = "Active"
-        };
+        var employeeDto = new EmployeeDtoBuilder().Build();
 
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        unitOfWorkMock.Setup(u => u.EmployeeRepository.InsertAsync(It.IsAny<Employee>()));
+        var employeeRepository = new EmployeeRepositoryMockBuilder()
+            .ReturnsForFirstOrDefaultAsync(null!)
+            .Build();
 
-        var messagingServiceMock = new Mock<IMessagingService>();
-        var service = new EmployeeAppService(unitOfWorkMock.Object, messagingServiceMock.Object);
+        var unitOfWorkMockBuilder = new UnitOfWorkMockBuilder()
+            .Using(employeeRepository.Object)
+            .Build();
+
+        var service = new EmployeeAppServiceBuilder()
+            .WithUnitOfWork(unitOfWorkMockBuilder.Object)
+            .Build();
 
         // Act
-        var result = await service.CreateAsync(dto);
+        var result = await service.CreateAsync(new EmployeeDtoBuilder().Build());
 
         // Assert
         result.Should().NotBeNull();
-        result.Value.FullName.Should().Be(dto.FullName);
-        result.Value.Department.Should().Be(dto.Department);
-        result.Value.Email.Should().Be(dto.Email);
-        result.Value.Role.Should().Be(dto.Role);
-        result.Value.Address.Should().Be(dto.Address);
-        result.Value.DateOfJoining.Should().Be(dto.DateOfJoining);
-        result.Value.Status.Should().Be(dto.Status);
+        result.Value.FullName.Should().Be(employeeDto.FullName);
+        result.Value.Department.Should().Be(employeeDto.Department);
+        result.Value.Email.Should().Be(employeeDto.Email);
+        result.Value.Role.Should().Be(employeeDto.Role);
+        result.Value.Address.Should().Be(employeeDto.Address);
+        result.Value.DateOfJoining.Should().Be(employeeDto.DateOfJoining);
+        result.Value.Status.Should().Be(employeeDto.Status);
     }
 
     [Test]
     public async Task CreateAsync_should_return_an_error_when_employee_with_same_email_exists()
     {
         // Arrange
-        var dto = new EmployeeDto
-        {
-            FullName = "Surinder Singh",
-            Department = "Engineering",
-            Email = "surinder.singh@gmail.com",
-            Role = "Software Engineer",
-            Address = "123 Main St, City, Country",
-            DateOfJoining = DateTime.UtcNow,
-            Status = "Active"
-        };
+        var existingEmployee = new EmployeeBuilder()
+            .WithEmail("abc@gmail.com")
+            .Build();
 
-        var existingEmployee = new Employee
-        {
-            Id = Guid.NewGuid(),
-            FullName = dto.FullName,
-            Department = dto.Department,
-            Email = dto.Email,
-            Role = dto.Role,
-            Address = dto.Address,
-            DateOfJoining = dto.DateOfJoining,
-            Status = dto.Status
-        };
+        var employeeRepositoryMock = new EmployeeRepositoryMockBuilder()
+            .ReturnsForFirstOrDefaultAsync(existingEmployee)
+            .Build();
 
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var messagingServiceMock = new Mock<IMessagingService>();
+        var unitOfWorkMock = new UnitOfWorkMockBuilder()
+            .Using(employeeRepositoryMock.Object)
+            .Build();
 
-        unitOfWorkMock.Setup(x => x.EmployeeRepository.FirstOrDefaultAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<string>(), It.IsAny<bool>()))
-            .ReturnsAsync(existingEmployee);
-        var service = new EmployeeAppService(unitOfWorkMock.Object, messagingServiceMock.Object);
+        var service = new EmployeeAppServiceBuilder()
+            .WithUnitOfWork(unitOfWorkMock.Object)
+            .Build();
 
         // Act
-        var result = await service.CreateAsync(dto);
+        var result = await service.CreateAsync(new EmployeeDtoBuilder().Build());
 
         // Assert
         result.Failed.Should().BeTrue();
