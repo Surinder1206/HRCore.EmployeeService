@@ -11,10 +11,18 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateEmployeeAsync([FromBody] CreateEmployeeRequest createEmployeeRequest)
     {
         var result = await _employeeAppService.CreateAsync(createEmployeeRequest.ToDto());
 
-        return CreatedAtAction("GetById", new { id = 111 }, result.Value.ToResponse());
+        return result.Ok
+            ? CreatedAtAction("GetById", new { id = 111 }, result.Value.ToResponse())
+            : Problem(
+                detail: result.ErrorMessage,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Bad Request"
+            );
     }
 }
