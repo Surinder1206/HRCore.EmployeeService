@@ -1,5 +1,7 @@
 ﻿using HRCore.EmployeeService.Application.DTOs;
 using HRCore.EmployeeService.Application.Interfaces;
+using HRCore.EmpoyeeService.API;
+using HRCore.EmpoyeeService.API.Models.Requests;
 using Moq;
 using NUnit.Framework;
 
