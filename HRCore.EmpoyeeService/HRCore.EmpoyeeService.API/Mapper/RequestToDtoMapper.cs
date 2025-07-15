@@ -9,7 +9,6 @@ public static class RequestToDtoMapper
     {
         return new EmployeeDto
         {
-            Id = Guid.NewGuid(),
             FullName = createEmployeeRequest.FullName,
             Department = createEmployeeRequest.Department,
             Email = createEmployeeRequest.Email,

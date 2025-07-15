@@ -4,19 +4,20 @@ namespace HRCore.EmployeeService.Tests.Builders;
 
 internal class EmployeeDtoBuilder : Builder<EmployeeDto>
 {
-    private string _email = "dummy@gmail.com";
+    private Guid _id = new();
 
-    public EmployeeDtoBuilder WithEmail(string email)
+    public EmployeeDtoBuilder WithId(Guid id)
     {
-        this._email = email;
+        _id = id;
         return this;
     }
 
     protected override EmployeeDto OnBuild() => new()
     {
+        Id = _id,
         FullName = "Surinder Singh",
         Department = "Engineering",
-        Email = _email,
+        Email = "abc@gmail.com",
         Role = "Software Engineer",
         Address = "123 Main St, City, Country",
         DateOfJoining = DateTime.UtcNow,

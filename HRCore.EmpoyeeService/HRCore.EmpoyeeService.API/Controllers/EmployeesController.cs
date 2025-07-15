@@ -1,4 +1,5 @@
 ﻿using HRCore.EmployeeService.Application.Interfaces;
+using HRCore.EmpoyeeService.API.Constants;
 using HRCore.EmpoyeeService.API.Mapper;
 using HRCore.EmpoyeeService.API.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
 {
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
 
-    [HttpPost]
+    [HttpPost(ApiEndpoints.Employee.Create)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateEmployeeAsync([FromBody] CreateEmployeeRequest createEmployeeRequest)
@@ -18,7 +19,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
         var result = await _employeeAppService.CreateAsync(createEmployeeRequest.ToDto());
 
         return result.Ok
-            ? CreatedAtAction("GetById", new { id = 111 }, result.Value.ToResponse())
+            ? CreatedAtAction("GetById", new { id = result.Value.Id }, result.Value.ToResponse())
             : Problem(
                 detail: result.ErrorMessage,
                 statusCode: StatusCodes.Status400BadRequest,

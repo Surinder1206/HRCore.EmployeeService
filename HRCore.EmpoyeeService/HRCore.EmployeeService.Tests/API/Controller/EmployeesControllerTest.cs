@@ -3,7 +3,6 @@ using HRCore.EmployeeService.Application.DTOs;
 using HRCore.EmployeeService.Application.Results;
 using HRCore.EmployeeService.Tests.Builders;
 using HRCore.EmpoyeeService.API.Mapper;
-using HRCore.EmpoyeeService.API.Models.Requests;
 using HRCore.EmpoyeeService.API.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -26,7 +25,7 @@ internal class EmployeesControllerTest
             .Build();
 
         // Act
-        await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
+        await controller.CreateEmployeeAsync(new CreateEmployeeRequestBuilder().Build());
 
         // Assert
         employeeServiceMock.Verify(s => s.CreateAsync(It.IsAny<EmployeeDto>()), Times.Once);
@@ -36,16 +35,24 @@ internal class EmployeesControllerTest
     public async Task CreateEmployeeAsync_should_return_201_Created_with_location_when_employee_creation_is_successful()
     {
         // Arrange
+        var id = Guid.NewGuid();
+        var _employeeDto = ServiceResult.Success(new EmployeeDtoBuilder().WithId(id).Build());
+
+        var employeeServiceMock = new EmployeeAppServiceMockBuilder()
+            .ReturnsForCreateEmployee(_employeeDto)
+            .Build();
+
         var controller = new EmployeesControllerBuilder()
+            .Using(employeeServiceMock.Object)
             .Build();
 
         // Act 
-        var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
+        var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequestBuilder().Build());
 
         //
         result.Should().BeOfType<CreatedAtActionResult>().Which.StatusCode.Should().Be(201);
         result.Should().BeOfType<CreatedAtActionResult>().Which.ActionName.Should().Be("GetById");
-
+        result.Should().BeOfType<CreatedAtActionResult>().Which.RouteValues?["id"].Should().Be(id);
     }
 
     [Test]
@@ -65,7 +72,7 @@ internal class EmployeesControllerTest
         var expectedResponse = _employeeDto.Value.ToResponse();
 
         // Act 
-        var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequest());
+        var result = await controller.CreateEmployeeAsync(new CreateEmployeeRequestBuilder().Build());
 
         // Assert
         result.Should().BeOfType<CreatedAtActionResult>().Which.Value.Should().BeOfType<EmployeeResponse>().Which.Should()
