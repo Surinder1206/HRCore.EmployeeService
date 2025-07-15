@@ -1,6 +1,7 @@
 ﻿using HRCore.EmployeeService.Application.DTOs;
 using HRCore.EmployeeService.Application.Interfaces;
 using HRCore.EmpoyeeService.API.Constants;
+using HRCore.EmpoyeeService.API.Controllers;
 using HRCore.EmpoyeeService.API.Mapper;
 using HRCore.EmpoyeeService.API.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HRCore.EmpoyeeService.API;
 
 [ApiController]
-public class EmployeesController(IEmployeeAppService employeeAppService) : ControllerBase
+public class EmployeesController(IEmployeeAppService employeeAppService) : SharedControllerBase
 {
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
 
@@ -21,11 +22,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
 
         return result.Ok
             ? CreatedAtAction("GetById", new { id = result.Value.Id }, result.Value.ToResponse())
-            : Problem(
-                detail: result.ErrorMessage,
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Bad Request"
-            );
+            : Problem(result);
     }
 
     [HttpGet(ApiEndpoints.Employee.Get)]
@@ -35,6 +32,9 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Contr
     [Produces(typeof(ActionResult<EmployeeDto>))]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        return null;
+        var result = await _employeeAppService.GetEmployeeByIdAsync(id);
+        return result.Ok
+            ? Ok(result.Value)
+            : Problem(result);
     }
 }

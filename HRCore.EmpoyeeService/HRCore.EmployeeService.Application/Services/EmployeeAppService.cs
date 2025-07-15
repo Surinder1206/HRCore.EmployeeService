@@ -28,4 +28,18 @@ public class EmployeeAppService(IUnitOfWork unitOfWork, IMessagingService messag
 
         return ServiceResult.Success(employee.ToEmployeeDto());
     }
+
+    public async Task<ServiceResult<EmployeeDto>> GetEmployeeByIdAsync(Guid id)
+    {
+        var employee = await _unitOfWork.EmployeeRepository.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (employee == null)
+        {
+            return ServiceResult.Fail<EmployeeDto>("Employee not found.", ErrorType.NotFound);
+        }
+
+        var employeeDto = employee.ToEmployeeDto();
+
+        return ServiceResult.Success(employeeDto);
+    }
 }
