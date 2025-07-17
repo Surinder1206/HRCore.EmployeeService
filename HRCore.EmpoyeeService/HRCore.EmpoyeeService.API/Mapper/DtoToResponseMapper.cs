@@ -1,4 +1,5 @@
 ﻿using HRCore.EmployeeService.Application.DTOs;
+using HRCore.EmployeeService.Application.Results;
 using HRCore.EmpoyeeService.API.Models.Responses;
 
 namespace HRCore.EmpoyeeService.API.Mapper;
@@ -18,5 +19,10 @@ public static class DtoToResponseMapper
             DateOfJoining = employeeDto.DateOfJoining,
             Status = employeeDto.Status
         };
+    }
+
+    public static ServiceResult<EmployeeResponse> ToProblemResponse(this ServiceResult<EmployeeDto> serviceResult)
+    {
+        return ServiceResult.Fail<EmployeeResponse>(serviceResult.ErrorMessage, serviceResult.ErrorType);
     }
 }
