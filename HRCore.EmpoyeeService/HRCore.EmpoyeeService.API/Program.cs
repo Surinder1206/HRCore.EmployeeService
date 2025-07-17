@@ -17,8 +17,21 @@ builder.Services.AddApiVersioning(x =>
 }).AddMvc();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// OpenAPI Documentation
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Info = new()
+        {
+            Title = "Employee Service API",
+            Version = context.DocumentName,
+            Description = "Provides a set of APIs for managing employee profiles, employment details, and roles within the BrightHR platform."
+        };
+        return Task.CompletedTask;
+    });
+});
 
 var app = builder.Build();
 
