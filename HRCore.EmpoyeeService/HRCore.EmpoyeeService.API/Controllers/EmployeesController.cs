@@ -10,11 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HRCore.EmpoyeeService.API;
 
 [ApiVersion(1.0)]
+[ApiVersion(2.0)]
 [ApiController]
 public class EmployeesController(IEmployeeAppService employeeAppService) : SharedControllerBase
 {
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
 
+    [MapToApiVersion(1.0)]
+    [EndpointDescription("Creates a new employee record.")]
     [HttpPost(ApiEndpoints.Employee.Create)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -28,6 +31,8 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result.ToProblemResponse());
     }
 
+    [MapToApiVersion(2.0)]
+    [EndpointDescription("Retrieves an employee by their unique identifier.")]
     [HttpGet(ApiEndpoints.Employee.Get)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,6 +46,9 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result.ToProblemResponse());
     }
 
+    //[Authorize]
+    [MapToApiVersion(1.0)]
+    [EndpointDescription("Retrieves all employees in the system.")]
     [HttpGet(ApiEndpoints.Employee.GetAll)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Produces(typeof(ActionResult<List<EmployeeResponse>>))]
@@ -53,6 +61,8 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result);
     }
 
+    [MapToApiVersion(1.0)]
+    [EndpointDescription("Updates an existing employee's details.")]
     [HttpPut(ApiEndpoints.Employee.Update)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -65,6 +75,8 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result);
     }
 
+    [MapToApiVersion(1.0)]
+    [EndpointDescription("Deletes an employee by their unique identifier.")]
     [HttpDelete(ApiEndpoints.Employee.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
