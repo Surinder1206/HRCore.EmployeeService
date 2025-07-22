@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using HRCore.EmpoyeeService.API.Documentation;
 using HRCore.EmpoyeeService.API.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
@@ -11,7 +12,49 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEmployeeDbContext(builder.Configuration);
 builder.Services.AddEmployeeServices();
 
-builder.Services.AddAuthentication().AddJwtBearer();
+// Authentication and Authorisation
+
+/* //Basic authentication setup, uncomment if needed option: 1
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(jwtOptions =>
+{
+jwtOptions.Authority = "https://sts.windows.net/3b27d02e-0ad3-4e02-947d-dd47cf86624f/"; // authority
+jwtOptions.Audience = "3f91483c-7acd-4269-a360-c62dafb0cf7d"; //clientId
+});
+*/
+
+//option: 2
+//var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+//          $"https://sts.windows.net/3b27d02e-0ad3-4e02-947d-dd47cf86624f/.well-known/openid-configuration",
+//          new OpenIdConnectConfigurationRetriever(),
+//          new HttpDocumentRetriever());
+
+//var discoveryDocument = await configurationManager.GetConfigurationAsync();
+//var issuerSigningKeys = discoveryDocument.SigningKeys;
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(jwtOptions =>
+//    {
+//        jwtOptions.Authority = builder.Configuration["AzureAd:Authority"];
+//        jwtOptions.Audience = builder.Configuration["AzureAd:Audience"];
+//        jwtOptions.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+//            IssuerSigningKeys = issuerSigningKeys,
+//            ValidAudiences = builder.Configuration.GetSection("AzureAd:ValidAudiences").Get<string[]>(),
+//            ValidIssuers = builder.Configuration.GetSection("AzureAd:ValidIssuers").Get<string[]>(),
+//            RoleClaimType = "roles",
+//            NameClaimType = "name"
+//        };
+//        jwtOptions.MapInboundClaims = false;
+//    });
+
+//option: 3
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+    AddJwtBearer(options => builder.Configuration.Bind("AzureAd", options));
 
 // API Versioning
 builder.Services.AddApiVersioning(x =>

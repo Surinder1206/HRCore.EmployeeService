@@ -5,6 +5,7 @@ using HRCore.EmpoyeeService.API.Controllers;
 using HRCore.EmpoyeeService.API.Mapper;
 using HRCore.EmpoyeeService.API.Models.Requests;
 using HRCore.EmpoyeeService.API.Models.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRCore.EmpoyeeService.API;
@@ -12,6 +13,7 @@ namespace HRCore.EmpoyeeService.API;
 [ApiVersion(1.0)]
 [ApiVersion(2.0)]
 [ApiController]
+[Authorize()]
 public class EmployeesController(IEmployeeAppService employeeAppService) : SharedControllerBase
 {
     private readonly IEmployeeAppService _employeeAppService = employeeAppService;
@@ -31,7 +33,8 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result.ToProblemResponse());
     }
 
-    [MapToApiVersion(2.0)]
+
+    [MapToApiVersion(1.0)]
     [EndpointDescription("Retrieves an employee by their unique identifier.")]
     [HttpGet(ApiEndpoints.Employee.Get)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -46,7 +49,7 @@ public class EmployeesController(IEmployeeAppService employeeAppService) : Share
             : Problem(result.ToProblemResponse());
     }
 
-    //[Authorize]
+    [Authorize(Roles = "HRAdmin")]
     [MapToApiVersion(1.0)]
     [EndpointDescription("Retrieves all employees in the system.")]
     [HttpGet(ApiEndpoints.Employee.GetAll)]
